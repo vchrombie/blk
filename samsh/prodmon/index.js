@@ -1,3 +1,5 @@
+// index.js
+
 document.getElementById("generateBtn").addEventListener("click", () => {
   const input = document.getElementById("inputBox").value;
   const lines = input
@@ -5,6 +7,9 @@ document.getElementById("generateBtn").addEventListener("click", () => {
     .map((line) => line.trim())
     .filter(Boolean);
   const records = [];
+
+  const excludeUnreachable =
+    document.getElementById("excludeUnreachable").checked;
 
   lines.forEach((line) => {
     const parts = line.split("\t");
@@ -20,7 +25,7 @@ document.getElementById("generateBtn").addEventListener("click", () => {
         const action = a < b ? "start" : "stop extra";
         records.push({ client, target, action });
       }
-    } else if (unreachable) {
+    } else if (unreachable && !excludeUnreachable) {
       records.push({ client, target: unreachable[1], action: "agent-start" });
     }
   });
