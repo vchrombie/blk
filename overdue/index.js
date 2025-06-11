@@ -1,21 +1,20 @@
-// index.js
+// blk/overdue/index.js
 
-const inputBox = document.getElementById("inputBox");
-const outputBox = document.getElementById("outputBox");
-const generateBtn = document.getElementById("generateBtn");
+function processLines() {
+  const input = document.getElementById("inputBox").value.trim();
 
-generateBtn.addEventListener("click", () => {
-  const lines = inputBox.value
-    .trim()
+  let lines = input
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean);
 
-  const commands = lines.map((line) => {
+  let commands = [];
+
+  commands = lines.map((line) => {
     const [service, host] = line.split(/\s+/);
 
-    const commaParts = line.split(",");
-    const bounceClause = commaParts[1] ? commaParts[1].trim() : "";
+    const [, rawClause] = line.split(",");
+    const bounceClause = rawClause ? rawClause.trim() : "";
 
     const reason = bounceClause
       ? `Exceeded scheduled bounce time (${bounceClause})`
@@ -24,5 +23,5 @@ generateBtn.addEventListener("click", () => {
     return `restart ${service} ${host} -r "${reason}"`;
   });
 
-  outputBox.value = commands.join("\n");
-});
+  document.getElementById("outputBox").value = commands.join("\n") + "\n";
+}

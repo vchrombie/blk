@@ -1,4 +1,4 @@
-// index.js
+// blk/samsh/mobaxterm/index.js
 
 document.addEventListener("DOMContentLoaded", () => {
   const generateBtn = document.getElementById("generateBtn");

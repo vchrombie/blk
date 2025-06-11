@@ -1,4 +1,4 @@
-// index.js
+// blk/entity/index.js
 
 function processLines() {
   const input = document.getElementById("inputLines").value.trim();
@@ -8,6 +8,7 @@ function processLines() {
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
+
   let uniqueLines = Array.from(new Set(lines));
 
   if (shouldSort) {
@@ -17,16 +18,4 @@ function processLines() {
   document.getElementById("outputLines").value = uniqueLines.join("\n") + "\n";
   document.getElementById("outputComma").value = uniqueLines.join(",");
   document.getElementById("outputSpace").value = uniqueLines.join(" ");
-}
-
-function copyToClipboard(id) {
-  const textarea = document.getElementById(id);
-  textarea.select();
-  textarea.setSelectionRange(0, 99999); // for mobile
-
-  try {
-    document.execCommand("copy");
-  } catch (err) {
-    alert("copy failed!");
-  }
 }

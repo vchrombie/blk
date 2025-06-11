@@ -1,4 +1,4 @@
-// index.js
+// blk/samsh/prodmon/index.js
 
 document.getElementById("generateBtn").addEventListener("click", () => {
   const input = document.getElementById("inputBox").value;
