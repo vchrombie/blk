@@ -1,3 +1,5 @@
+// index.js
+
 function processLines() {
   const input = document.getElementById("inputLines").value.trim();
   const shouldSort = document.getElementById("sortCheckbox").checked;
