@@ -1,10 +1,15 @@
 import React, { useMemo, useState } from "react";
 
-const split = (v) =>
-  v
-    .split(/[\n,\s]+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
+const split = (v, snow) =>
+  snow
+    ? v
+        .split(", ")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : v
+        .split(/[\n,\s]+/)
+        .map((s) => s.trim())
+        .filter(Boolean);
 
 async function copy(text) {
   try {
