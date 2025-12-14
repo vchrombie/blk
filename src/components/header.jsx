@@ -32,27 +32,25 @@ export default function Header({ crumbs }) {
   };
 
   return (
-    <header className="header bg-black p-3 mb-4 fs-3 text-white fw-semibold d-flex align-items-center">
-      <div>
+    <header className="header bg-black p-2 mb-4 fs-2 text-white fw-semibold d-flex align-items-center">
+      <div className="ms-4">
         {crumbs.map((c, i) => (
           <span key={c.to}>
             {i > 0 && " / "}
-            <Link
-              className="header-link text-decoration-none text-white"
-              to={c.to}
-            >
+            <Link className="header-link text-white mx-2" to={c.to}>
               {c.label}
             </Link>
           </span>
         ))}
       </div>
 
-      <div className="ms-auto d-flex align-items-center">
+      <div className="ms-auto d-flex align-items-center me-4">
         <a
           href="#"
           id="shareLink"
           onClick={handleCopyLink} // Added onClick handler
           className="me-3 text-white"
+          title="copy link"
           data-bs-toggle="tooltip"
           data-bs-placement="bottom"
           data-bs-title="copy link" // Initial tooltip message

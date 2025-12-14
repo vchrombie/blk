@@ -41,17 +41,30 @@ export default function Entity() {
       <div className="row g-3">
         {/* INPUT */}
         <div className="col-md-6">
-          <label className="form-label fw-semibold fs-5">input</label>
+          <label className="form-label fw-semibold fs-4">input</label>
+
           <div className="d-flex align-items-center gap-2 mt-2 mb-3">
-            <input
-              type="checkbox"
-              checked={sort}
-              onChange={(e) => setSort(e.target.checked)}
-            />
-            <span>sort</span>
-            <span className="text-muted ms-2">
-              {before} → {after}
-            </span>
+            <button
+              className={`btn btn-sm ${
+                sort ? "btn-secondary" : "btn-outline-secondary"
+              }`}
+              onClick={() => setSort(!sort)}
+            >
+              sort
+            </button>
+
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={() => setInput("")}
+            >
+              clear
+            </button>
+
+            <div className="ms-auto">
+              <span className="fw-semibold">
+                {before} → {after}
+              </span>
+            </div>
           </div>
 
           <textarea
@@ -67,8 +80,12 @@ export default function Entity() {
         <div className="col-md-6 d-flex flex-column gap-3">
           <div>
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="fw-semibold fs-5">non-duplicates</span>
-              <button className="btn btn-sm" onClick={() => copy(lines)}>
+              <span className="fw-semibold fs-4">non-duplicates</span>
+              <button
+                className="btn btn-sm btn-outline-secondary "
+                title="copy"
+                onClick={() => copy(lines)}
+              >
                 📋
               </button>
             </div>
@@ -82,7 +99,7 @@ export default function Entity() {
 
           <div>
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="fw-semibold fs-5">
+              <span className="fw-semibold fs-4">
                 {delim === "," ? "comma-separated" : "space-separated"}
               </span>
               <div className="d-flex gap-1">
@@ -102,7 +119,11 @@ export default function Entity() {
                 >
                   space
                 </button>
-                <button className="btn btn-sm" onClick={() => copy(delimited)}>
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  title="copy"
+                  onClick={() => copy(delimited)}
+                >
                   📋
                 </button>
               </div>
