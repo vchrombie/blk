@@ -4,6 +4,7 @@ import { TOOLS } from "./tools.js";
 import Header from "./components/header.jsx";
 import Home from "./pages/home.jsx";
 import Entity from "./pages/entity.jsx";
+import Overdue from "./pages/overdue.jsx";
 import Placeholder from "./pages/placeholder.jsx";
 
 export default function App() {
@@ -11,7 +12,10 @@ export default function App() {
   const tool = TOOLS.find((t) => t.path === pathname);
 
   const crumbs = tool
-    ? [{ label: "blk", to: "/" }, { label: tool.key, to: tool.path }]
+    ? [
+        { label: "blk", to: "/" },
+        { label: tool.key, to: tool.path },
+      ]
     : [{ label: "blk", to: "/" }];
 
   return (
@@ -21,7 +25,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/entity" element={<Entity />} />
-          <Route path="/overdue" element={<Placeholder />} />
+          <Route path="/overdue" element={<Overdue />} />
           <Route path="/samsh" element={<Placeholder />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

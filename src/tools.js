@@ -8,8 +8,8 @@ export const TOOLS = [
   {
     key: "overdue",
     path: "/overdue",
-    title: "Overdue",
-    desc: "Restart helpers.",
+    title: "overdue",
+    desc: "generate commands for p1nj bounce overdue alerts",
   },
   { key: "samsh", path: "/samsh", title: "Samsh", desc: "Shell helpers." },
 ];
