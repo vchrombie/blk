@@ -45,7 +45,15 @@ export default function Overdue() {
       <div className="row g-3">
         {/* INPUT */}
         <div className="col-md-6">
-          <label className="form-label fw-semibold fs-4">alerts</label>
+          <div className="d-flex justify-content-between align-items-center">
+            <label className="form-label fw-semibold fs-4">alerts</label>
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={() => setInput("")}
+            >
+              clear
+            </button>
+          </div>
           <textarea
             className="form-control"
             style={{ minHeight: "500px" }}
@@ -64,9 +72,8 @@ export default function Overdue() {
             <button
               className="btn btn-sm btn-outline-secondary"
               onClick={() => copy(commands.join("\n"))}
-              disabled={!commands.length}
             >
-              📋
+              copy
             </button>
           </div>
           <textarea

@@ -46,36 +46,36 @@ export default function Entity() {
       <div className="row g-3">
         {/* INPUT */}
         <div className="col-md-6">
-          <label className="form-label fw-semibold fs-4">input</label>
+          <div className="d-flex justify-content-between align-items-center mb-1">
+            <div className="d-flex gap-2 align-items-center">
+              <label className="form-label fw-semibold fs-4">input</label>
 
-          <div className="d-flex align-items-center gap-2 mt-2 mb-3">
-            <button
-              className={`btn btn-sm ${
-                sort ? "btn-secondary" : "btn-outline-secondary"
-              }`}
-              onClick={() => setSort(!sort)}
-            >
-              sort
-            </button>
+              <button
+                className={`btn btn-sm ${
+                  sort ? "btn-secondary" : "btn-outline-secondary"
+                }`}
+                onClick={() => setSort(!sort)}
+              >
+                sort
+              </button>
 
-            <button
-              className="btn btn-sm btn-outline-secondary"
-              onClick={() => setInput("")}
-            >
-              clear
-            </button>
-
+              <button
+                className="btn btn-sm btn-outline-secondary"
+                onClick={() => setInput("")}
+              >
+                clear
+              </button>
+            </div>
             <div className="ms-auto">
               <span className="fw-semibold">
                 {before} → {after}
               </span>
             </div>
           </div>
-
           <textarea
             className="form-control"
-            style={{ minHeight: "500px" }}
-            placeholder="enter lines..."
+            style={{ minHeight: "450px" }}
+            placeholder="enter lines ..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
@@ -85,18 +85,19 @@ export default function Entity() {
         <div className="col-md-6 d-flex flex-column gap-3">
           <div>
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="fw-semibold fs-4">non-duplicates</span>
-              <button
-                className="btn btn-sm btn-outline-secondary "
-                title="copy"
-                onClick={() => copy(lines)}
-              >
-                📋
-              </button>
+              <div className="d-flex gap-2 align-items-center">
+                <span className="fw-semibold fs-4">non-duplicates</span>
+                <button
+                  className="btn btn-sm btn-outline-secondary "
+                  onClick={() => copy(lines)}
+                >
+                  copy
+                </button>
+              </div>
             </div>
             <textarea
               className="form-control bg-light"
-              style={{ minHeight: "250px" }}
+              style={{ minHeight: "200px" }}
               readOnly
               value={lines}
             />
@@ -104,9 +105,17 @@ export default function Entity() {
 
           <div>
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="fw-semibold fs-4">
-                {delim === "," ? "comma-separated" : "space-separated"}
-              </span>
+              <div className="d-flex gap-2 align-items-center">
+                <span className="fw-semibold fs-4">
+                  {delim === "," ? "comma-separated" : "space-separated"}
+                </span>
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => copy(delimited)}
+                >
+                  copy
+                </button>
+              </div>
               <div className="d-flex gap-1">
                 <button
                   className={`btn btn-sm ${
@@ -124,18 +133,11 @@ export default function Entity() {
                 >
                   space
                 </button>
-                <button
-                  className="btn btn-sm btn-outline-secondary"
-                  title="copy"
-                  onClick={() => copy(delimited)}
-                >
-                  📋
-                </button>
               </div>
             </div>
             <textarea
               className="form-control bg-light"
-              style={{ minHeight: "250px" }}
+              style={{ minHeight: "200px" }}
               readOnly
               value={delimited}
             />
