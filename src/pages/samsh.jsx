@@ -117,9 +117,10 @@ export default function Samsh() {
   return (
     <div className="container-fluid mt-3">
       <div className="text-center mb-3">
+        {/* make the btn large */}
         <div className="btn-group">
           <button
-            className={`btn btn-sm ${
+            className={`btn btn-lg ${
               mode === "mobaxterm" ? "btn-primary" : "btn-outline-primary"
             }`}
             onClick={() => setMode("mobaxterm")}
@@ -127,7 +128,7 @@ export default function Samsh() {
             mobaxterm
           </button>
           <button
-            className={`btn btn-sm ${
+            className={`btn btn-lg ${
               mode === "prodmon" ? "btn-primary" : "btn-outline-primary"
             }`}
             onClick={() => setMode("prodmon")}
@@ -139,7 +140,16 @@ export default function Samsh() {
 
       <div className="row g-3">
         <div className="col-md-6">
-          <label className="form-label fw-semibold fs-4">input</label>
+          <div className="d-flex gap-3 align-items-center mb-1">
+            <label className="form-label fw-semibold fs-4">input</label>
+
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={() => setInput("")}
+            >
+              clear
+            </button>
+          </div>
           <textarea
             className="form-control"
             style={{ minHeight: "520px" }}
@@ -149,13 +159,13 @@ export default function Samsh() {
         </div>
 
         <div className="col-md-6">
-          <div className="d-flex justify-content-between align-items-center mb-1">
+          <div className="d-flex gap-3 align-items-center mb-1">
             <span className="fw-semibold fs-4">output</span>
             <button
               className="btn btn-sm btn-outline-secondary"
               onClick={() => copy(output)}
             >
-              📋
+              copy
             </button>
           </div>
           <textarea

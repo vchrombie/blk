@@ -45,7 +45,7 @@ export default function Overdue() {
       <div className="row g-3">
         {/* INPUT */}
         <div className="col-md-6">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex gap-3 align-items-center">
             <label className="form-label fw-semibold fs-4">alerts</label>
             <button
               className="btn btn-sm btn-outline-secondary"
@@ -65,7 +65,7 @@ export default function Overdue() {
 
         {/* OUTPUT */}
         <div className="col-md-6">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex gap-3 align-items-center">
             <label className="form-label fw-semibold fs-4">
               restart commands
             </label>

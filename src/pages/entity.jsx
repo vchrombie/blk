@@ -47,7 +47,7 @@ export default function Entity() {
         {/* INPUT */}
         <div className="col-md-6">
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <div className="d-flex gap-2 align-items-center">
+            <div className="d-flex gap-3 align-items-center">
               <label className="form-label fw-semibold fs-4">input</label>
 
               <button
@@ -74,7 +74,7 @@ export default function Entity() {
           </div>
           <textarea
             className="form-control"
-            style={{ minHeight: "450px" }}
+            style={{ minHeight: "600px" }}
             placeholder="enter lines ..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -85,7 +85,7 @@ export default function Entity() {
         <div className="col-md-6 d-flex flex-column gap-3">
           <div>
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <div className="d-flex gap-2 align-items-center">
+              <div className="d-flex gap-3 align-items-center">
                 <span className="fw-semibold fs-4">non-duplicates</span>
                 <button
                   className="btn btn-sm btn-outline-secondary "
@@ -97,7 +97,7 @@ export default function Entity() {
             </div>
             <textarea
               className="form-control bg-light"
-              style={{ minHeight: "200px" }}
+              style={{ minHeight: "275px" }}
               readOnly
               value={lines}
             />
@@ -105,7 +105,7 @@ export default function Entity() {
 
           <div>
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <div className="d-flex gap-2 align-items-center">
+              <div className="d-flex gap-4 align-items-center">
                 <span className="fw-semibold fs-4">
                   {delim === "," ? "comma-separated" : "space-separated"}
                 </span>
@@ -137,7 +137,7 @@ export default function Entity() {
             </div>
             <textarea
               className="form-control bg-light"
-              style={{ minHeight: "200px" }}
+              style={{ minHeight: "275px" }}
               readOnly
               value={delimited}
             />
