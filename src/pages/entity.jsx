@@ -28,18 +28,22 @@ export default function Entity() {
   const [input, setInput] = useState("");
   const [sort, setSort] = useState(false);
   const [delim, setDelim] = useState(",");
+  const [quote, setQuote] = useState("");
 
   const { before, after, lines, delimited } = useMemo(() => {
     const items = split(input);
     let uniq = Array.from(new Set(items));
     if (sort) uniq = [...uniq].sort((a, b) => a.localeCompare(b));
+    const formatted = quote
+      ? uniq.map((item) => `${quote}${item}${quote}`)
+      : uniq;
     return {
       before: items.length,
       after: uniq.length,
       lines: uniq.join("\n"),
-      delimited: uniq.join(delim),
+      delimited: formatted.join(delim),
     };
-  }, [input, sort, delim]);
+  }, [input, sort, delim, quote]);
 
   return (
     <div className="container-fluid mt-3">
@@ -116,23 +120,47 @@ export default function Entity() {
                   copy
                 </button>
               </div>
-              <div className="d-flex gap-1">
-                <button
-                  className={`btn btn-sm ${
-                    delim === "," ? "btn-secondary" : "btn-outline-secondary"
-                  }`}
-                  onClick={() => setDelim(",")}
-                >
-                  comma
-                </button>
-                <button
-                  className={`btn btn-sm ${
-                    delim === " " ? "btn-secondary" : "btn-outline-secondary"
-                  }`}
-                  onClick={() => setDelim(" ")}
-                >
-                  space
-                </button>
+              <div className="d-flex gap-2">
+                <div className="btn-group">
+                  <button
+                    className={`btn btn-sm ${
+                      delim === "," ? "btn-secondary" : "btn-outline-secondary"
+                    }`}
+                    onClick={() => setDelim(",")}
+                  >
+                    comma
+                  </button>
+                  <button
+                    className={`btn btn-sm ${
+                      delim === " " ? "btn-secondary" : "btn-outline-secondary"
+                    }`}
+                    onClick={() => setDelim(" ")}
+                  >
+                    space
+                  </button>
+                </div>
+                <div className="btn-group">
+                  <button
+                    className={`btn btn-sm ${
+                      quote === "'" ? "btn-secondary" : "btn-outline-secondary"
+                    }`}
+                    onClick={() =>
+                      setQuote((prev) => (prev === "'" ? "" : "'"))
+                    }
+                  >
+                    single quotes
+                  </button>
+                  <button
+                    className={`btn btn-sm ${
+                      quote === '"' ? "btn-secondary" : "btn-outline-secondary"
+                    }`}
+                    onClick={() =>
+                      setQuote((prev) => (prev === '"' ? "" : '"'))
+                    }
+                  >
+                    double quotes
+                  </button>
+                </div>
               </div>
             </div>
             <textarea
