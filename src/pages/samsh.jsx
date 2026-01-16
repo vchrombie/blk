@@ -1,7 +1,5 @@
 import React, { useMemo, useState } from "react";
 
-const MOBAX_RE = /^\*?\s*\d+\/\d+\s+CLIENT\s+(\S+)\s+(\S+)\s*(.*)$/;
-
 const PRODMON_RE = /^(\S+)\s+(\S+)\s+Instance Mismatch\s+\((\d+)\/(\d+)\)/;
 
 async function copy(text) {
@@ -22,17 +20,26 @@ function parseMobaxterm(text) {
   const excess = [];
 
   text.split("\n").forEach((line) => {
-    const m = line.match(MOBAX_RE);
-    if (!m) return;
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("*")) return;
 
-    const name = m[1];
-    const host = m[2];
-    const counts = m[3].trim().split(/\s+/).filter(Boolean);
+    const parts = trimmed.split(/\s+/);
+    if (parts.length < 5 || !parts[1].includes("/")) return;
 
-    if (counts.length === 1) {
-      fewer.push(`${name} ${host}`);
-    } else if (counts.length > 1) {
-      excess.push(`${name} ${host}`);
+    const [actRaw, expRaw] = parts[1].split("/");
+    const act = Number.parseInt(actRaw, 10);
+    const exp = Number.parseInt(expRaw, 10);
+    const service = parts[3];
+    const host = parts[4];
+
+    if (!Number.isFinite(act) || !Number.isFinite(exp) || !service || !host) {
+      return;
+    }
+
+    if (act < exp) {
+      fewer.push(`${service} ${host}`);
+    } else if (act > exp) {
+      excess.push(`${service} ${host}`);
     }
   });
 
@@ -160,7 +167,7 @@ export default function Samsh() {
 
         <div className="col-md-6">
           <div className="d-flex gap-3 align-items-center mb-1">
-            <span className="fw-semibold fs-4">output</span>
+            <label className="form-label fw-semibold fs-4">output</label>
             <button
               className="btn btn-sm btn-outline-secondary"
               onClick={() => copy(output)}
