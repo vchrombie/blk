@@ -23,4 +23,10 @@ export const TOOLS = [
     title: "sam shell",
     desc: "generate commands for instance mismatch alerts",
   },
+  {
+    key: "rejectVersion",
+    path: "/rejectVersion",
+    title: "rejectVersion",
+    desc: "reject an appserver version",
+  },
 ];

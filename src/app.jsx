@@ -7,7 +7,7 @@ import Entity from "./pages/entity.jsx";
 import Diff from "./pages/diff.jsx";
 import Overdue from "./pages/overdue.jsx";
 import Samsh from "./pages/samsh.jsx";
-import Placeholder from "./pages/placeholder.jsx";
+import RejectVersion from "./pages/reject-version.jsx";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -30,6 +30,7 @@ export default function App() {
           <Route path="/diff" element={<Diff />} />
           <Route path="/overdue" element={<Overdue />} />
           <Route path="/samsh" element={<Samsh />} />
+          <Route path="/rejectVersion" element={<RejectVersion />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
