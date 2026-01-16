@@ -118,6 +118,7 @@ export default function Samsh() {
   const output = useMemo(() => {
     const cmds =
       mode === "mobaxterm" ? parseMobaxterm(input) : parseProdmon(input);
+    cmds.push("");
     return Array.from(new Set(cmds)).join("\n");
   }, [input, mode]);
 

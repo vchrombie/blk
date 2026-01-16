@@ -412,7 +412,7 @@ export default function Diff() {
             placeholder="paste original content ..."
             value={before}
             onChange={(e) => setBefore(e.target.value)}
-            style={{ minHeight: "260px" }}
+            style={{ minHeight: "300px" }}
           />
         </div>
         <div className="col-md-6">
@@ -422,7 +422,7 @@ export default function Diff() {
             placeholder="paste new content ..."
             value={after}
             onChange={(e) => setAfter(e.target.value)}
-            style={{ minHeight: "260px" }}
+            style={{ minHeight: "300px" }}
           />
         </div>
       </div>
