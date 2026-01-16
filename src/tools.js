@@ -6,6 +6,12 @@ export const TOOLS = [
     desc: "de-dupe/delimited items (clients/appservers)",
   },
   {
+    key: "diff",
+    path: "/diff",
+    title: "diff",
+    desc: "show the diff between two pasted blocks",
+  },
+  {
     key: "overdue",
     path: "/overdue",
     title: "overdue",

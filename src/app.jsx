@@ -4,6 +4,7 @@ import { TOOLS } from "./tools.js";
 import Header from "./components/header.jsx";
 import Home from "./pages/home.jsx";
 import Entity from "./pages/entity.jsx";
+import Diff from "./pages/diff.jsx";
 import Overdue from "./pages/overdue.jsx";
 import Samsh from "./pages/samsh.jsx";
 import Placeholder from "./pages/placeholder.jsx";
@@ -26,6 +27,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/entity" element={<Entity />} />
+          <Route path="/diff" element={<Diff />} />
           <Route path="/overdue" element={<Overdue />} />
           <Route path="/samsh" element={<Samsh />} />
           <Route path="*" element={<Navigate to="/" replace />} />
