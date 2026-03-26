@@ -16,6 +16,7 @@ no data is persisted, everything runs client-side in the browser.
   samsh commands.
 - rejectVersion: build a rejectVersion URL for an appserver, version, and
   reason.
+- clock: simple clock with timezone converter with live clocks.
 
 ## setup
 

@@ -29,4 +29,10 @@ export const TOOLS = [
     title: "rejectVersion",
     desc: "reject an appserver version",
   },
+  {
+    key: "clock",
+    path: "/clock",
+    title: "clock",
+    desc: "minimal timezone converter with live clocks",
+  },
 ];

@@ -8,6 +8,7 @@ import Diff from "./pages/diff.jsx";
 import Overdue from "./pages/overdue.jsx";
 import Samsh from "./pages/samsh.jsx";
 import RejectVersion from "./pages/reject-version.jsx";
+import Clock from "./pages/clock.jsx";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/overdue" element={<Overdue />} />
           <Route path="/samsh" element={<Samsh />} />
           <Route path="/rejectVersion" element={<RejectVersion />} />
+          <Route path="/clock" element={<Clock />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
