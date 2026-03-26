@@ -354,7 +354,7 @@ body {
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 24px;
+    gap: 28px;
     align-items: start;
 }
 
@@ -362,7 +362,7 @@ body {
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 18px;
-    padding: 22px 18px 24px;
+    padding: 24px 20px 26px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -384,6 +384,11 @@ body {
     color: #475569;
 }
 
+.clock-label-emoji {
+    font-size: 24px;
+    line-height: 1;
+}
+
 .clock-badge {
     border-radius: 999px;
     background: #e2e8f0;
@@ -398,7 +403,7 @@ body {
 .clock-visual {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
     margin-top: 14px;
 }
 
@@ -407,7 +412,7 @@ body {
 }
 
 .clock-face {
-    width: 168px;
+    width: 204px;
 }
 
 .clock-face svg {
@@ -420,6 +425,14 @@ body {
     fill: none;
     stroke: #cbd5e1;
     stroke-width: 1.5;
+}
+
+.clock-marker {
+    fill: #64748b;
+    font-size: 6px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
 }
 
 .clock-hand {
@@ -440,7 +453,7 @@ body {
 }
 
 .clock-phase {
-    min-width: 92px;
+    min-width: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -448,11 +461,6 @@ body {
     font-size: 16px;
     font-weight: 600;
     color: #334155;
-}
-
-.clock-phase-emoji {
-    font-size: 28px;
-    line-height: 1;
 }
 
 .clock-live-datetime {

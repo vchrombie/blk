@@ -8,6 +8,11 @@ function polarToPoint(angle, length) {
   };
 }
 
+const MARKERS = Array.from({ length: 12 }, (_, index) => ({
+  value: String(index === 0 ? 12 : index),
+  angle: index * 30,
+}));
+
 export default function AnalogClock({ dateTime, label }) {
   const minuteAngle = dateTime.minute * 6;
   const hourAngle = ((dateTime.hour % 12) + dateTime.minute / 60) * 30;
@@ -18,6 +23,15 @@ export default function AnalogClock({ dateTime, label }) {
     <div className="clock-face" aria-label={`${label} analog clock`}>
       <svg viewBox="0 0 100 100" role="img" aria-hidden="true">
         <circle cx="50" cy="50" r="42" className="clock-ring" />
+        {MARKERS.map(({ value, angle }) => {
+          const point = polarToPoint(angle, 34);
+
+          return (
+            <text key={value} x={point.x} y={point.y} className="clock-marker">
+              {value}
+            </text>
+          );
+        })}
         <line x1="50" y1="50" x2={hourHand.x} y2={hourHand.y} className="clock-hand hour" />
         <line
           x1="50"

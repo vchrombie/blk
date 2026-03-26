@@ -41,7 +41,7 @@ function getDayPhase(dateTime) {
   }
 
   if (hour >= 12 && hour < 18) {
-    return { emoji: "☀️", label: "Day" };
+    return { emoji: "☀️", label: "Afternoon" };
   }
 
   if (hour >= 18 && hour < 22) {
@@ -98,9 +98,14 @@ export default function Clock() {
     };
   }, []);
 
-  const sourceZone = ZONES.find(({ key }) => key === sourceKey)?.zone ?? ZONES[0].zone;
+  const sourceZone =
+    ZONES.find(({ key }) => key === sourceKey)?.zone ?? ZONES[0].zone;
 
-  const applyDrafts = (nextDateDraft, nextTimeDraft, nextSourceKey = sourceKey) => {
+  const applyDrafts = (
+    nextDateDraft,
+    nextTimeDraft,
+    nextSourceKey = sourceKey,
+  ) => {
     const parsedTime = parseTime(nextTimeDraft);
     if (!parsedTime || !nextDateDraft) return false;
 
@@ -197,17 +202,22 @@ export default function Clock() {
 
             return (
               <article key={key} className="clock-card">
-                <label className="clock-label">{label}</label>
+                <div className="clock-label-row">
+                  <label className="clock-label">{label}</label>
+                  <span
+                    className="clock-label-emoji"
+                    aria-label={dayPhase.label}
+                    title={dayPhase.label}
+                  >
+                    {dayPhase.emoji}
+                  </span>
+                </div>
                 <div className="clock-visual clock-visual-top">
                   <AnalogClock dateTime={live} label={label} />
-                  <div className="clock-phase" aria-label={`${dayPhase.label} in ${label}`}>
-                    <span className="clock-phase-emoji" aria-hidden="true">
-                      {dayPhase.emoji}
-                    </span>
-                    <span>{dayPhase.label}</span>
-                  </div>
                 </div>
-                <div className="clock-live-datetime">{live.toFormat("HH:mm:ss dd LLL yyyy")}</div>
+                <div className="clock-live-datetime">
+                  {live.toFormat("HH:mm:ss dd LLL yyyy")}
+                </div>
               </article>
             );
           })}
@@ -218,7 +228,11 @@ export default function Clock() {
           <h2 className="clock-section-title">Timezone Converter</h2>
         </div>
         <div className="clock-toolbar">
-          <div className="clock-source-picker" role="tablist" aria-label="Source timezone">
+          <div
+            className="clock-source-picker"
+            role="tablist"
+            aria-label="Source timezone"
+          >
             {ZONES.map(({ key, label }) => (
               <button
                 key={key}
@@ -253,12 +267,20 @@ export default function Clock() {
                 onBlur={handleTimeBlur}
               />
             </label>
-            <button className="clock-refresh" type="button" onClick={handleRefresh}>
+            <button
+              className="clock-refresh"
+              type="button"
+              onClick={handleRefresh}
+            >
               Now
             </button>
           </div>
         </div>
-        <div className="clock-grid clock-grid-converter" role="group" aria-label="Timezone converter">
+        <div
+          className="clock-grid clock-grid-converter"
+          role="group"
+          aria-label="Timezone converter"
+        >
           {cards.map(({ key, label, converted }) => {
             const isSource = sourceKey === key;
 
@@ -266,7 +288,9 @@ export default function Clock() {
               <article key={key} className="clock-card clock-card-converter">
                 <div className="clock-label-row">
                   <label className="clock-label">{label}</label>
-                  {isSource ? <span className="clock-badge">Source</span> : null}
+                  {isSource ? (
+                    <span className="clock-badge">Source</span>
+                  ) : null}
                 </div>
                 <div className="clock-converter-output" aria-live="polite">
                   {converted.toFormat("HH:mm:ss dd LLL yyyy")}
