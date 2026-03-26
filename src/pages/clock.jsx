@@ -28,19 +28,9 @@ function parseTime(value) {
   };
 }
 
-function getDayDifferenceLabel(base, candidate) {
-  const diffDays = Math.round(
-    candidate.startOf("day").diff(base.startOf("day"), "days").days,
-  );
-
-  if (diffDays === 1) return "+1 day";
-  if (diffDays === -1) return "-1 day";
-  return "";
-}
-
-function getNextMinuteDelay() {
+function getNextSecondDelay() {
   const now = Date.now();
-  return 60000 - (now % 60000);
+  return 1000 - (now % 1000);
 }
 
 function getDayPhase(dateTime) {
@@ -61,19 +51,28 @@ function getDayPhase(dateTime) {
   return { emoji: "🌙", label: "Night" };
 }
 
+function getNowState(nextSourceKey) {
+  const nowUtc = DateTime.utc().set({ millisecond: 0 });
+  const source = ZONES.find(({ key }) => key === nextSourceKey) ?? ZONES[0];
+  const sourceDateTime = nowUtc.setZone(source.zone);
+
+  return {
+    utcTime: nowUtc,
+    dateDraft: sourceDateTime.toFormat("yyyy-LL-dd"),
+    timeDraft: sourceDateTime.toFormat("HH:mm"),
+  };
+}
+
 export default function Clock() {
-  const [utcTime, setUtcTime] = useState(() =>
-    DateTime.utc().startOf("minute"),
-  );
-  const [clockUtc, setClockUtc] = useState(() => DateTime.utc());
-  const [activeKey, setActiveKey] = useState(null);
+  const initialState = getNowState("DEL");
   const [sourceKey, setSourceKey] = useState("DEL");
-  const [drafts, setDrafts] = useState({});
+  const [utcTime, setUtcTime] = useState(initialState.utcTime);
+  const [clockUtc, setClockUtc] = useState(() => DateTime.utc());
+  const [dateDraft, setDateDraft] = useState(initialState.dateDraft);
+  const [timeDraft, setTimeDraft] = useState(initialState.timeDraft);
   const debounceRef = useRef();
 
   useEffect(() => {
-    if (activeKey) return undefined;
-
     let timeoutId;
     let intervalId;
 
@@ -81,59 +80,17 @@ export default function Clock() {
       setClockUtc(DateTime.utc());
       intervalId = window.setInterval(() => {
         setClockUtc(DateTime.utc());
-      }, 60000);
+      }, 1000);
     };
 
     setClockUtc(DateTime.utc());
-    timeoutId = window.setTimeout(startTicking, getNextMinuteDelay());
+    timeoutId = window.setTimeout(startTicking, getNextSecondDelay());
 
     return () => {
       window.clearTimeout(timeoutId);
       window.clearInterval(intervalId);
     };
-  }, [activeKey]);
-
-  const displayedTimes = useMemo(() => {
-    return Object.fromEntries(
-      ZONES.map(({ key, zone }) => [
-        key,
-        utcTime.setZone(zone).toFormat("HH:mm"),
-      ]),
-    );
-  }, [utcTime]);
-
-  const sourceDateTime = useMemo(() => {
-    const sourceZone =
-      ZONES.find(({ key }) => key === sourceKey)?.zone ?? ZONES[0].zone;
-    return utcTime.setZone(sourceZone);
-  }, [sourceKey, utcTime]);
-
-  const handleInputChange = (key, value) => {
-    const formattedValue = formatInputValue(value);
-
-    window.clearTimeout(debounceRef.current);
-    setActiveKey(key);
-    setDrafts((current) => ({ ...current, [key]: formattedValue }));
-
-    const parsed = parseTime(formattedValue);
-    if (!parsed) return;
-
-    debounceRef.current = window.setTimeout(() => {
-      const zone = ZONES.find((entry) => entry.key === key)?.zone;
-      if (!zone) return;
-
-      setUtcTime((currentUtc) => {
-        const zoned = currentUtc.setZone(zone).set({
-          hour: parsed.hour,
-          minute: parsed.minute,
-          second: 0,
-          millisecond: 0,
-        });
-        return zoned.toUTC();
-      });
-      setSourceKey(key);
-    }, 300);
-  };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -141,77 +98,184 @@ export default function Clock() {
     };
   }, []);
 
-  const handleFocus = (key) => {
-    setActiveKey(key);
-    setDrafts((current) => ({ ...current, [key]: displayedTimes[key] }));
+  const sourceZone = ZONES.find(({ key }) => key === sourceKey)?.zone ?? ZONES[0].zone;
+
+  const applyDrafts = (nextDateDraft, nextTimeDraft, nextSourceKey = sourceKey) => {
+    const parsedTime = parseTime(nextTimeDraft);
+    if (!parsedTime || !nextDateDraft) return false;
+
+    const sourceZoneName =
+      ZONES.find(({ key }) => key === nextSourceKey)?.zone ?? ZONES[0].zone;
+    const nextDateTime = DateTime.fromFormat(
+      `${nextDateDraft} ${parsedTime.hour}:${parsedTime.minute}`,
+      "yyyy-LL-dd H:m",
+      { zone: sourceZoneName },
+    );
+
+    if (!nextDateTime.isValid) return false;
+
+    setUtcTime(nextDateTime.toUTC().set({ second: 0, millisecond: 0 }));
+    return true;
   };
 
-  const handleBlur = () => {
+  const handleSourceChange = (nextSourceKey) => {
     window.clearTimeout(debounceRef.current);
-    if (activeKey && !parseTime(drafts[activeKey] ?? "")) {
-      setUtcTime(DateTime.utc().startOf("minute"));
-      setSourceKey(activeKey);
-    }
-    setActiveKey(null);
-    setDrafts({});
+    const sourceDateTime = utcTime.setZone(sourceZone);
+    const nextSourceTime = sourceDateTime.setZone(
+      ZONES.find(({ key }) => key === nextSourceKey)?.zone ?? ZONES[0].zone,
+    );
+
+    setSourceKey(nextSourceKey);
+    setDateDraft(nextSourceTime.toFormat("yyyy-LL-dd"));
+    setTimeDraft(nextSourceTime.toFormat("HH:mm"));
   };
+
+  const handleDateChange = (value) => {
+    setDateDraft(value);
+    if (applyDrafts(value, timeDraft)) return;
+
+    if (!value) return;
+    const resetState = getNowState(sourceKey);
+    setUtcTime(resetState.utcTime);
+    setDateDraft(resetState.dateDraft);
+    setTimeDraft(resetState.timeDraft);
+  };
+
+  const handleTimeChange = (value) => {
+    const formattedValue = formatInputValue(value);
+    window.clearTimeout(debounceRef.current);
+    setTimeDraft(formattedValue);
+
+    const parsed = parseTime(formattedValue);
+    if (!parsed || !dateDraft) return;
+
+    debounceRef.current = window.setTimeout(() => {
+      applyDrafts(dateDraft, formattedValue);
+    }, 300);
+  };
+
+  const handleTimeBlur = () => {
+    window.clearTimeout(debounceRef.current);
+    if (applyDrafts(dateDraft, timeDraft)) {
+      setTimeDraft(formatInputValue(timeDraft));
+      return;
+    }
+
+    const resetState = getNowState(sourceKey);
+    setUtcTime(resetState.utcTime);
+    setDateDraft(resetState.dateDraft);
+    setTimeDraft(resetState.timeDraft);
+  };
+
+  const handleRefresh = () => {
+    window.clearTimeout(debounceRef.current);
+    const resetState = getNowState(sourceKey);
+    setUtcTime(resetState.utcTime);
+    setClockUtc(resetState.utcTime);
+    setDateDraft(resetState.dateDraft);
+    setTimeDraft(resetState.timeDraft);
+  };
+
+  const cards = useMemo(() => {
+    return ZONES.map(({ key, label, zone }) => ({
+      key,
+      label,
+      converted: utcTime.setZone(zone),
+      live: clockUtc.setZone(zone),
+    }));
+  }, [clockUtc, utcTime]);
 
   return (
     <section className="clock-page">
-      <div className="clock-grid" role="group" aria-label="Timezone converter">
-        {ZONES.map(({ key, label, zone }) => {
-          const timeInZone = utcTime.setZone(zone);
-          const clockInZone = clockUtc.setZone(zone);
-          const dayDifference = getDayDifferenceLabel(
-            sourceDateTime,
-            timeInZone,
-          );
-          const dayPhase = getDayPhase(clockInZone);
+      <section className="clock-section">
+        <div className="clock-section-head">
+          <h2 className="clock-section-title">Live Clocks</h2>
+        </div>
+        <div className="clock-grid" role="group" aria-label="Live clocks">
+          {cards.map(({ key, label, live }) => {
+            const dayPhase = getDayPhase(live);
 
-          return (
-            <article key={key} className="clock-card">
-              <label className="clock-label" htmlFor={`time-${key}`}>
+            return (
+              <article key={key} className="clock-card">
+                <label className="clock-label">{label}</label>
+                <div className="clock-visual clock-visual-top">
+                  <AnalogClock dateTime={live} label={label} />
+                  <div className="clock-phase" aria-label={`${dayPhase.label} in ${label}`}>
+                    <span className="clock-phase-emoji" aria-hidden="true">
+                      {dayPhase.emoji}
+                    </span>
+                    <span>{dayPhase.label}</span>
+                  </div>
+                </div>
+                <div className="clock-live-datetime">{live.toFormat("HH:mm:ss dd LLL yyyy")}</div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+      <section className="clock-section">
+        <div className="clock-section-head">
+          <h2 className="clock-section-title">Timezone Converter</h2>
+        </div>
+        <div className="clock-toolbar">
+          <div className="clock-source-picker" role="tablist" aria-label="Source timezone">
+            {ZONES.map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                className={`clock-source-btn ${sourceKey === key ? "is-active" : ""}`}
+                onClick={() => handleSourceChange(key)}
+              >
                 {label}
-              </label>
+              </button>
+            ))}
+          </div>
+          <div className="clock-toolbar-fields">
+            <label className="clock-toolbar-field">
+              <span className="clock-toolbar-label">Date</span>
               <input
-                id={`time-${key}`}
-                className={`clock-input ${activeKey === key ? "is-active" : ""}`}
+                className="clock-toolbar-input clock-date-input"
+                type="date"
+                value={dateDraft}
+                onChange={(event) => handleDateChange(event.target.value)}
+              />
+            </label>
+            <label className="clock-toolbar-field">
+              <span className="clock-toolbar-label">Time</span>
+              <input
+                className="clock-toolbar-input clock-time-input"
                 type="text"
                 inputMode="numeric"
                 maxLength={5}
                 placeholder="HH:mm"
-                value={
-                  activeKey === key
-                    ? (drafts[key] ?? displayedTimes[key])
-                    : displayedTimes[key]
-                }
-                onFocus={() => handleFocus(key)}
-                onBlur={handleBlur}
-                onChange={(event) => handleInputChange(key, event.target.value)}
-                aria-label={`${label} time in 24-hour format`}
+                value={timeDraft}
+                onChange={(event) => handleTimeChange(event.target.value)}
+                onBlur={handleTimeBlur}
               />
-              <div className="clock-meta" aria-live="polite">
-                {dayDifference || "\u00A0"}
-              </div>
-              <div className="clock-visual">
-                <AnalogClock dateTime={clockInZone} label={label} />
-                <div
-                  className="clock-phase"
-                  aria-label={`${dayPhase.label} in ${label}`}
-                >
-                  <span className="clock-phase-emoji" aria-hidden="true">
-                    {dayPhase.emoji}
-                  </span>
-                  <span>{dayPhase.label}</span>
+            </label>
+            <button className="clock-refresh" type="button" onClick={handleRefresh}>
+              Now
+            </button>
+          </div>
+        </div>
+        <div className="clock-grid clock-grid-converter" role="group" aria-label="Timezone converter">
+          {cards.map(({ key, label, converted }) => {
+            const isSource = sourceKey === key;
+
+            return (
+              <article key={key} className="clock-card clock-card-converter">
+                <div className="clock-label-row">
+                  <label className="clock-label">{label}</label>
+                  {isSource ? <span className="clock-badge">Source</span> : null}
                 </div>
-              </div>
-              <div className="clock-date">
-                {clockInZone.toFormat("dd LLL yyyy")}
-              </div>
-            </article>
-          );
-        })}
-      </div>
+                <div className="clock-converter-output" aria-live="polite">
+                  {converted.toFormat("HH:mm:ss dd LLL yyyy")}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
     </section>
   );
 }
